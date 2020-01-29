@@ -166,12 +166,13 @@ function getDates(date, type, startDate) {
   const monthEnd = isPersian
     ? gMonthEnd(month)
     : new Date(month.getFullYear(), month.getMonth() + 1, 0)
-  startDate.setHours(0, 0, 0, 0)
-  monthStart.setHours(0, 0, 0, 0)
-  monthEnd.setHours(0, 0, 0, 0)
+  startDate.setHours(12, 0, 0, 0)
+  monthStart.setHours(12, 0, 0, 0)
+  monthEnd.setHours(12, 0, 0, 0)
   if (startDate <= monthEnd) {
     const renderDate = new Date(monthStart)
     const allDates = []
+    let delta
     while (renderDate.getTime() <= monthEnd.getTime()) {
       // Make empty objects to handle month first day exact weekday
       if (
@@ -181,13 +182,15 @@ function getDates(date, type, startDate) {
         const weekDay =
           type === 'gregorian' ? renderDate.getDay() : renderDate.getDay() + 1
         if (weekDay < 7) {
-          const delta = new Array(weekDay).fill(null)
+          delta = new Array(weekDay).fill(null)
           allDates.push(...delta)
         }
       }
+      if (delta && allDates.length - delta.length > 30) {
+        break
+      }
       allDates.push(new Date(renderDate))
       // to avoid wrong Safari’s Daylight Saving Time calculations
-      renderDate.setHours(12, 0, 0, 0)
       renderDate.setDate(renderDate.getDate() + 1)
     }
     return allDates
