@@ -4,8 +4,10 @@ import {
   generateMonths,
   getStatus,
   GtoJ,
+  JtoG,
   persianMonthsNames,
-  persianWeekDayNames
+  getWeekNames,
+  gregorianMonthsNames
 } from './helper'
 import Month from './Month'
 
@@ -26,6 +28,9 @@ export default class Datepicker extends Component {
       selectTo: to,
       months: generateMonths(monthsCount, startDate, selectFrom, to, type)
     }
+    // document.documentElement.style.setProperty(
+    //   '--st-rpd-dir',
+    //   `${type === 'jalali' ? 'rtl' : 'ltr'}`)
   }
 
   changeSelection = (data) => {
@@ -48,9 +53,12 @@ export default class Datepicker extends Component {
     months = months.map(month =>
       month.map(day => {
         if (day.date) {
+          const jalaliDate = GtoJ(day.date)
+          const gregorianDate = JtoG(jalaliDate[0], jalaliDate[1], jalaliDate[2])
           return {
             date: day.date,
-            persianDate: GtoJ(day.date),
+            jalaliDate,
+            gregorianDate,
             status: getStatus(day.date, selectFrom, selectTo),
             disabled: day.disabled
           }
@@ -90,25 +98,34 @@ export default class Datepicker extends Component {
     })
   }
 
-  renderWeekdays = () => (
-    <div className='daysOfWeek'>
-      {persianWeekDayNames.map((name, key) => (
-        <div key={key}>{name}</div>
-      ))}
-    </div>
-  )
+  renderWeekdays = () => {
+    const { type } = this.props
+    return (
+      <div className='daysOfWeek'>
+        {getWeekNames(type).map((name, key) => (
+          <div key={key}>{name}</div>
+        ))}
+      </div>
+    )
+  }
 
   render() {
+    const {type} = this.props
+    const isJalali = type === 'jalali'
     const { months } = this.state
     return (
-      <div className='datepicker-container'>
+      <div className={`datepicker-container ${isJalali ? 'datepicker-container-jalali' : ''}`}>
         {this.renderWeekdays()}
         {months.map((item, index) => {
-          const date = item[15].persianDate
-          const monthTitle = `${persianMonthsNames[date[1] - 1]} ${date[0]}`
+          const date = isJalali ? item[15].jalaliDate : item[15].gregorianDate
+          const monthTitle = isJalali
+            ? `${persianMonthsNames[date[1] - 1]} ${date[0]}`
+            : `${gregorianMonthsNames[date[1] - 1]} ${date[0]}`
+
           return (
             <Month
               month={item}
+              type={type}
               key={`month-${index}`}
               monthTitle={monthTitle}
               onSelect={this.changeSelection}
@@ -127,7 +144,7 @@ Datepicker.defaultProps = {
   selectFrom: d,
   startDate: d,
   rangeSelect: false,
-  type: 'persian',
+  type: 'jalali',
   monthsCount: 12
 }
 

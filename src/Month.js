@@ -12,13 +12,15 @@ class Month extends PureComponent {
   }
 
   renderMonth(month) {
-    const {onSelect, scrollToSelectedDay} = this.props
+    const {onSelect, scrollToSelectedDay, type} = this.props
     return month.map((day, index) =>
       <Day
+        type={type}
         disabled={day.disabled}
         status={day.status}
         date={day.date}
-        persianDate={day.persianDate}
+        jalaliDate={day.jalaliDate}
+        gregorianDate={day.gregorianDate}
         key={`${index}`}
         onSelect={onSelect}
         scrollToSelectedDay={scrollToSelectedDay}
@@ -27,10 +29,11 @@ class Month extends PureComponent {
   }
 
   render() {
-    const {month, monthTitle} = this.props
+    const {month, monthTitle, type} = this.props
+    const isJalali = type === 'jalali'
     const monthArray = this.chunkArray(month, 7)
     return (
-      <div className='month-container'>
+      <div className={`month-container ${isJalali ? 'month-container-jalali' : ''}`}>
         <div className='heading'>
           <span className='title'>{monthTitle}</span>
         </div>
@@ -49,6 +52,7 @@ class Month extends PureComponent {
 Month.propTypes = {
   month: PropTypes.array,
   monthTitle: PropTypes.string,
+  type: PropTypes.string,
   onSelect: PropTypes.func,
   scrollToSelectedDay: PropTypes.func
 }

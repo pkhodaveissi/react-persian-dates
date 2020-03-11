@@ -1,5 +1,9 @@
 /* eslint radix: ["error", "as-needed"] */
-export const persianWeekDayNames = ['ش', 'ی', 'د', 'س', 'چ', 'پ', 'ج']
+
+export const getWeekNames = (type) => type === 'jalali'
+  ? ['ش', 'ی', 'د', 'س', 'چ', 'پ', 'ج']
+  : ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
+
 export const persianMonthsNames = [
   'فروردین',
   'اردیبهشت',
@@ -14,6 +18,21 @@ export const persianMonthsNames = [
   'بهمن',
   'اسفند'
 ]
+export const gregorianMonthsNames = [
+  'January',
+  'February',
+  'March',
+  'April',
+  'May',
+  'June',
+  'July',
+  'August',
+  'September',
+  'October',
+  'November',
+  'December'
+]
+// export function getMonthName = ()
 
 export function GtoJ(date) {
   let gy = date.getFullYear()
@@ -137,9 +156,12 @@ export function generateMonths(count, startDate, selectFrom, selectTo, type) {
       months.push(
         month.map(day => {
           if (day) {
+            const jalaliDate = GtoJ(day)
+            const gregorianDate = JtoG(jalaliDate[0], jalaliDate[1], jalaliDate[2])
             return {
               date: day,
-              persianDate: GtoJ(day),
+              jalaliDate,
+              gregorianDate,
               status: getStatus(day, selectFrom, selectTo),
               disabled:
                 day.getTime() <
@@ -159,11 +181,11 @@ export function generateMonths(count, startDate, selectFrom, selectTo, type) {
 
 function getDates(date, type, startDate) {
   const month = date
-  const isPersian = type === 'persian'
-  const monthStart = isPersian
+  const isJalali = type === 'jalali'
+  const monthStart = isJalali
     ? gMonthStart(month)
     : new Date(month.getFullYear(), month.getMonth(), 1)
-  const monthEnd = isPersian
+  const monthEnd = isJalali
     ? gMonthEnd(month)
     : new Date(month.getFullYear(), month.getMonth() + 1, 0)
   startDate.setHours(12, 0, 0, 0)

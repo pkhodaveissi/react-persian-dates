@@ -14,17 +14,19 @@ class Day extends PureComponent {
   }
 
   render() {
-    const { disabled, status, date, persianDate, onSelect } = this.props
+    const { disabled, status, date, jalaliDate, gregorianDate, onSelect, type } = this.props
     const today = new Date().toDateString()
+    const isJalali = type === 'jalali'
     if (status !== 'monthFirstDays') {
       const data = {
         date,
         persian: {
-          dateArray: persianDate,
-          month: persianMonthsNames[persianDate[1] - 1]
+          dateArray: jalaliDate,
+          month: persianMonthsNames[jalaliDate[1] - 1]
         }
       }
       const isToday = date.toDateString() === today
+      const todayText = isJalali ? 'امروز' : 'today'
       return (
         <div className='dayWrapper' ref={ref => { this.dayRef = ref }}>
           <button
@@ -33,8 +35,8 @@ class Day extends PureComponent {
             onClick={() => onSelect(data)}
             disabled={disabled}
           >
-            <span className='today-text'>{isToday && 'امروز'}</span>
-            <span>{persianDate[2]}</span>
+            <span className='today-text'>{isToday ? todayText : ''}</span>
+            <span>{isJalali ? jalaliDate[2] : gregorianDate[2]}</span>
           </button>
         </div>
       )
@@ -51,7 +53,9 @@ Day.propTypes = {
   disabled: PropTypes.bool,
   scrollToSelectedDay: PropTypes.func,
   status: PropTypes.string,
-  persianDate: PropTypes.array,
+  type: PropTypes.string,
+  jalaliDate: PropTypes.array,
+  gregorianDate: PropTypes.array,
   onSelect: PropTypes.func,
   date: PropTypes.oneOfType([
     PropTypes.string,
