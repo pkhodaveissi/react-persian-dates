@@ -11,10 +11,13 @@
   -webkit-box-direction: normal;
   -ms-flex-direction: column;
   flex-direction: column;
-  padding: 0 16px; }
+  padding: 0 16px;
+  font-family: sans-serif;
+}
 
 .datepicker-container-jalali {
   direction: rtl;
+  font-family: "IRANSans", sans-serif;
 }
 /* Days of week row */
 .datepicker-container .daysOfWeek {
