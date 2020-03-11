@@ -2,7 +2,7 @@
 
 export const getWeekNames = (type) => type === 'jalali'
   ? ['ش', 'ی', 'د', 'س', 'چ', 'پ', 'ج']
-  : ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
+  : ['Sat', 'Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri']
 
 export const persianMonthsNames = [
   'فروردین',
@@ -201,8 +201,7 @@ function getDates(date, type, startDate) {
         renderDate.getDate() === monthStart.getDate() &&
         allDates.length === 0
       ) {
-        const weekDay =
-          type === 'gregorian' ? renderDate.getDay() : renderDate.getDay() + 1
+        const weekDay = renderDate.getDay() + 1
         if (weekDay < 7) {
           delta = new Array(weekDay).fill(null)
           allDates.push(...delta)

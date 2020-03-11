@@ -16,6 +16,7 @@ export default class App extends Component {
         </div> */}
         <div>
           <ExampleComponent
+            type="gregorian"
             rangeSelect={true}
             startDate={new Date()}
             selectFrom={new Date()}
